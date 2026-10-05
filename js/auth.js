@@ -1,0 +1,1 @@
+// auth.js - Registro e inicio de sesión (HU-10)

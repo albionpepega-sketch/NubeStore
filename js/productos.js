@@ -53,6 +53,7 @@ function escucharProductos() {
     productos = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
     productos.sort((a, b) => a.nombre.localeCompare(b.nombre));
     dibujarTabla();
+    actualizarResumen();
   }, () => {
     mostrarMensaje("No se pudo cargar el inventario.");
   });
@@ -209,7 +210,14 @@ async function eliminarProducto(p) {
 }
 function venderProducto(p) {
   if (p.stock <= 0) {
-    mostrarMensaje(`No hay stock de "${p.nombre}".`);
+      const quedan = p.stock - 1;
+  if (quedan === 0) {
+    mostrarMensaje(`Venta registrada. ¡${p.nombre} se agotó!`, true);
+  } else if (quedan <= p.minimo) {
+    mostrarMensaje(`Venta registrada. Atención: quedan ${quedan} de ${p.nombre}.`, true);
+  } else {
+    mostrarMensaje(`Venta registrada: ${p.nombre}`, true);
+  }
     return;
   }
 
@@ -230,4 +238,36 @@ function venderProducto(p) {
   });
 
   mostrarMensaje(`Venta registrada: ${p.nombre}`, true);
+}
+function actualizarResumen() {
+  const agotados = productos.filter((p) => p.stock === 0);
+  const bajos = productos.filter((p) => p.stock > 0 && p.stock <= p.minimo);
+  const valor = productos.reduce((suma, p) => suma + p.precio * p.stock, 0);
+
+  document.getElementById("total-productos").textContent = productos.length;
+  document.getElementById("total-bajo").textContent = bajos.length;
+  document.getElementById("total-agotados").textContent = agotados.length;
+  document.getElementById("valor-inventario").textContent =
+    "$" + valor.toLocaleString("es-CO");
+
+  const lista = document.getElementById("lista-alertas");
+  lista.innerHTML = "";
+  agotados.forEach((p) =>
+    agregarAlerta(lista, `${p.nombre} está agotado.`, "estado-agotado"));
+  bajos.forEach((p) =>
+    agregarAlerta(
+      lista,
+      `${p.nombre} tiene stock bajo: quedan ${p.stock} y tu mínimo es ${p.minimo}.`,
+      "estado-bajo"
+    ));
+
+  document.getElementById("sin-alertas").style.display =
+    agotados.length + bajos.length === 0 ? "block" : "none";
+}
+
+function agregarAlerta(lista, texto, clase) {
+  const li = document.createElement("li");
+  li.textContent = texto;
+  li.className = "alerta " + clase;
+  lista.appendChild(li);
 }

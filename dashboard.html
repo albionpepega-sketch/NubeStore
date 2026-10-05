@@ -82,8 +82,29 @@
       </div>
       <p id="vacio" class="subtitulo">Aún no tienes productos registrados.</p>
     </section>
+     <section>
+      <h2>Panel de ventas</h2>
+      <div class="resumen">
+        <div class="tarjeta"><span>Ventas de hoy</span><strong id="ventas-hoy">0</strong></div>
+        <div class="tarjeta"><span>Total vendido hoy</span><strong id="total-hoy">$0</strong></div>
+        <div class="tarjeta"><span>Total últimos 7 días</span><strong id="total-semana">$0</strong></div>
+      </div>
+
+      <div class="card-form">
+        <h3>Más vendidos (últimos 7 días)</h3>
+        <ul id="lista-top" class="alertas"></ul>
+        <p id="sin-top" class="subtitulo">Aún no hay ventas en los últimos 7 días.</p>
+      </div>
+
+      <div class="card-form">
+        <h3>Últimas ventas</h3>
+        <ul id="lista-ultimas" class="alertas"></ul>
+        <p id="sin-ultimas" class="subtitulo">Aún no has registrado ventas.</p>
+      </div>
+    </section>
   </main>
 
   <script type="module" src="js/productos.js"></script>
+  <script type="module" src="js/ventas.js"></script>
 </body>
 </html>

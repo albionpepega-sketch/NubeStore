@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NubeStore - Panel</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="barra">
+    <h1>NubeStore</h1>
+    <div>
+      <span id="usuario"></span>
+      <button id="btn-salir" type="button" class="btn-salir">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <h2>Panel de NubeStore</h2>
+    <p>Aquí irán el inventario y las ventas.</p>
+  </main>
+
+  <script type="module">
+    import { auth } from "./js/firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+    // Si no hay sesión, devuelve al login
+    onAuthStateChanged(auth, (usuario) => {
+      if (!usuario) {
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("usuario").textContent = usuario.email;
+      }
+    });
+
+    document.getElementById("btn-salir").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

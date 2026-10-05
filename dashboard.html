@@ -15,28 +15,53 @@
     </div>
   </header>
 
-  <main>
-    <h2>Panel de NubeStore</h2>
-    <p>Aquí irán el inventario y las ventas.</p>
+  <main class="panel">
+    <section class="card-form">
+      <h2 id="titulo-form">Agregar producto</h2>
+      <div class="grid-form">
+        <div>
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" maxlength="60" placeholder="Coca-Cola 1.5L">
+        </div>
+        <div>
+          <label for="categoria">Categoría</label>
+          <input id="categoria" type="text" maxlength="40" placeholder="Bebidas">
+        </div>
+        <div>
+          <label for="precio">Precio</label>
+          <input id="precio" type="number" min="0" step="1" placeholder="4500">
+        </div>
+        <div>
+          <label for="stock">Stock</label>
+          <input id="stock" type="number" min="0" step="1" placeholder="20">
+        </div>
+        <div>
+          <label for="minimo">Stock mínimo</label>
+          <input id="minimo" type="number" min="0" step="1" placeholder="5">
+        </div>
+      </div>
+      <button id="btn-guardar" type="button" class="btn">Guardar producto</button>
+      <button id="btn-cancelar" type="button" class="btn-salir oculto">Cancelar edición</button>
+      <p id="mensaje" class="mensaje"></p>
+    </section>
+
+    <section>
+      <h2>Inventario</h2>
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th><th>Categoría</th><th>Precio</th>
+              <th>Stock</th><th>Mínimo</th><th>Estado</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-productos"></tbody>
+        </table>
+      </div>
+      <p id="vacio" class="subtitulo">Aún no tienes productos registrados.</p>
+    </section>
   </main>
 
-  <script type="module">
-    import { auth } from "./js/firebase.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-
-    // Si no hay sesión, devuelve al login
-    onAuthStateChanged(auth, (usuario) => {
-      if (!usuario) {
-        window.location.href = "index.html";
-      } else {
-        document.getElementById("usuario").textContent = usuario.email;
-      }
-    });
-
-    document.getElementById("btn-salir").addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "index.html";
-    });
-  </script>
+  <script type="module" src="js/productos.js"></script>
 </body>
 </html>

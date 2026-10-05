@@ -6,7 +6,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {
   collection, addDoc, updateDoc, deleteDoc, doc,
-  query, where, onSnapshot, serverTimestamp
+  query, where, onSnapshot, serverTimestamp,
+  writeBatch, increment
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const campos = {
@@ -99,7 +100,12 @@ function dibujarTabla() {
     btnEliminar.textContent = "Eliminar";
     btnEliminar.className = "btn-mini peligro";
     btnEliminar.addEventListener("click", () => eliminarProducto(p));
-    tdAcciones.append(btnEditar, btnEliminar);
+    const btnVender = document.createElement("button");
+    btnVender.textContent = "Vender";
+    btnVender.className = "btn-mini vender";
+    btnVender.disabled = p.stock === 0;
+    btnVender.addEventListener("click", () => venderProducto(p));
+    tdAcciones.append(btnVender, btnEditar, btnEliminar);
     tr.appendChild(tdAcciones);
 
     tabla.appendChild(tr);
@@ -200,4 +206,28 @@ async function eliminarProducto(p) {
   } catch (e) {
     mostrarMensaje("No se pudo eliminar el producto.");
   }
+}
+function venderProducto(p) {
+  if (p.stock <= 0) {
+    mostrarMensaje(`No hay stock de "${p.nombre}".`);
+    return;
+  }
+
+  const batch = writeBatch(db);
+  batch.update(doc(db, "productos", p.id), { stock: increment(-1) });
+  batch.set(doc(collection(db, "ventas")), {
+    uid: usuarioActual.uid,
+    productoId: p.id,
+    nombre: p.nombre,
+    precio: p.precio,
+    cantidad: 1,
+    total: p.precio,
+    fecha: serverTimestamp()
+  });
+
+  batch.commit().catch(() => {
+    mostrarMensaje("No se pudo registrar la venta.");
+  });
+
+  mostrarMensaje(`Venta registrada: ${p.nombre}`, true);
 }

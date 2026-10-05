@@ -263,6 +263,7 @@ function actualizarResumen() {
 
   document.getElementById("sin-alertas").style.display =
     agotados.length + bajos.length === 0 ? "block" : "none";
+    actualizarPedido();
 }
 
 function agregarAlerta(lista, texto, clase) {
@@ -271,3 +272,37 @@ function agregarAlerta(lista, texto, clase) {
   li.className = "alerta " + clase;
   lista.appendChild(li);
 }
+function calcularPedido() {
+  return productos
+    .filter((p) => p.stock <= p.minimo)
+    .map((p) => ({
+      nombre: p.nombre,
+      cantidad: Math.max(p.minimo * 2 - p.stock, 1)
+    }));
+}
+
+function actualizarPedido() {
+  const pedido = calcularPedido();
+  const lista = document.getElementById("lista-pedido");
+  lista.innerHTML = "";
+  pedido.forEach((item) =>
+    agregarAlerta(lista, `${item.nombre}: pedir ${item.cantidad} unidades`, "estado-bajo"));
+  document.getElementById("sin-pedido").style.display =
+    pedido.length === 0 ? "block" : "none";
+  document.getElementById("btn-whatsapp").disabled = pedido.length === 0;
+}
+
+document.getElementById("btn-whatsapp").addEventListener("click", () => {
+  const pedido = calcularPedido();
+  if (pedido.length === 0) return;
+
+  const lineas = pedido.map((i) => `- ${i.nombre}: ${i.cantidad} unidades`);
+  const texto = "Hola, quisiera hacer este pedido:\n" + lineas.join("\n") + "\nGracias.";
+
+  // Deja solo los dígitos; si es un celular colombiano de 10 dígitos, agrega el 57
+  let numero = document.getElementById("telefono").value.replace(/\D/g, "");
+  if (numero.length === 10 && numero.startsWith("3")) numero = "57" + numero;
+
+  const url = "https://wa.me/" + numero + "?text=" + encodeURIComponent(texto);
+  window.open(url, "_blank");
+});

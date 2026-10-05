@@ -27,6 +27,7 @@ const vacio = document.getElementById("vacio");
 let usuarioActual = null;
 let editandoId = null;
 let productos = [];
+let textoBusqueda = "";
 let cancelarEscucha = null;
 
 // ---- Sesión: si no hay usuario, vuelve al login ----
@@ -74,9 +75,20 @@ function celda(texto) {
 
 function dibujarTabla() {
   tabla.innerHTML = "";
-  vacio.style.display = productos.length === 0 ? "block" : "none";
 
-  productos.forEach((p) => {
+  const visibles = productos.filter(coincideConBusqueda);
+
+  if (productos.length === 0) {
+    vacio.textContent = "Aún no tienes productos registrados.";
+    vacio.style.display = "block";
+  } else if (visibles.length === 0) {
+    vacio.textContent = `No se encontraron productos para "${textoBusqueda}".`;
+    vacio.style.display = "block";
+  } else {
+    vacio.style.display = "none";
+  }
+
+  visibles.forEach((p) => {
     const tr = document.createElement("tr");
     tr.appendChild(celda(p.nombre));
     tr.appendChild(celda(p.categoria || "-"));
@@ -305,4 +317,22 @@ document.getElementById("btn-whatsapp").addEventListener("click", () => {
 
   const url = "https://wa.me/" + numero + "?text=" + encodeURIComponent(texto);
   window.open(url, "_blank");
+});
+function normalizar(texto) {
+  return String(texto || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function coincideConBusqueda(p) {
+  const buscado = normalizar(textoBusqueda.trim());
+  if (!buscado) return true;
+  return normalizar(p.nombre).includes(buscado) ||
+         normalizar(p.categoria).includes(buscado);
+}
+
+document.getElementById("buscador").addEventListener("input", (e) => {
+  textoBusqueda = e.target.value;
+  dibujarTabla();
 });

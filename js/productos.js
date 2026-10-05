@@ -50,7 +50,9 @@ document.getElementById("btn-salir").addEventListener("click", async () => {
 // ---- Leer productos en tiempo real (solo los del usuario) ----
 function escucharProductos() {
   const q = query(collection(db, "productos"), where("uid", "==", usuarioActual.uid));
-  cancelarEscucha = onSnapshot(q, (snapshot) => {
+   cancelarEscucha = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
+    hayPendientes = snapshot.metadata.hasPendingWrites;
+    actualizarEstadoRed();
     productos = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
     productos.sort((a, b) => a.nombre.localeCompare(b.nombre));
     dibujarTabla();
@@ -170,25 +172,23 @@ btnGuardar.addEventListener("click", async () => {
     minimo: Number(campos.minimo.value)
   };
 
-  btnGuardar.disabled = true;
-  try {
-    if (editandoId) {
-      await updateDoc(doc(db, "productos", editandoId), datos);
-      mostrarMensaje("Producto actualizado.", true);
-    } else {
-      await addDoc(collection(db, "productos"), {
-        ...datos,
-        uid: usuarioActual.uid,
-        creado: serverTimestamp()
-      });
-      mostrarMensaje("Producto guardado.", true);
-    }
-    limpiarFormulario();
-  } catch (e) {
-    mostrarMensaje("No se pudo guardar. Revisa tu conexión e intenta de nuevo.");
-  } finally {
-    btnGuardar.disabled = false;
+  // Sin await: sin internet la promesa no termina hasta sincronizar y la
+  // pantalla quedaría congelada. Firestore guarda local y sincroniza después.
+  const sufijo = navigator.onLine ? "" : " (se sincronizará al volver internet)";
+
+  if (editandoId) {
+    updateDoc(doc(db, "productos", editandoId), datos)
+      .catch(() => mostrarMensaje("No se pudo actualizar el producto."));
+    mostrarMensaje("Producto actualizado." + sufijo, true);
+  } else {
+    addDoc(collection(db, "productos"), {
+      ...datos,
+      uid: usuarioActual.uid,
+      creado: serverTimestamp()
+    }).catch(() => mostrarMensaje("No se pudo guardar el producto."));
+    mostrarMensaje("Producto guardado." + sufijo, true);
   }
+  limpiarFormulario();
 });
 
 // ---- Editar ----
@@ -336,3 +336,25 @@ document.getElementById("buscador").addEventListener("input", (e) => {
   textoBusqueda = e.target.value;
   dibujarTabla();
 });
+// ---- Estado de conexión y sincronización (HU-08, HU-09) ----
+const bannerRed = document.getElementById("estado-red");
+let hayPendientes = false;
+
+function actualizarEstadoRed() {
+  if (!navigator.onLine) {
+    bannerRed.textContent = hayPendientes
+      ? "Sin conexión: tienes cambios pendientes, se enviarán al volver internet."
+      : "Sin conexión: puedes seguir vendiendo y consultando. Todo se guarda en este dispositivo.";
+    bannerRed.className = "estado-red sin-conexion";
+  } else if (hayPendientes) {
+    bannerRed.textContent = "Sincronizando cambios...";
+    bannerRed.className = "estado-red sincronizando";
+  } else {
+    bannerRed.textContent = "Conectado: todo sincronizado.";
+    bannerRed.className = "estado-red en-linea";
+  }
+}
+
+window.addEventListener("online", actualizarEstadoRed);
+window.addEventListener("offline", actualizarEstadoRed);
+actualizarEstadoRed();

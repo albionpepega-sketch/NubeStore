@@ -6,111 +6,585 @@
   <title>NubeStore - Panel</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-  <header class="barra">
-    <h1>NubeStore</h1>
-    <div>
-      <span id="usuario"></span>
-      <button id="btn-salir" type="button" class="btn-salir">Cerrar sesión</button>
+
+<body class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="lateral">
+
+    <div class="marca">
+      <span class="marca-icono">N</span>
+      <span>NubeStore</span>
     </div>
-  </header>
-  <div id="estado-red" class="estado-red en-linea">Conectado</div>
 
-  <main class="panel">
-     <section class="resumen">
-      <div class="tarjeta"><span>Productos activos</span><strong id="total-productos">0</strong></div>
-      <div class="tarjeta"><span>Stock bajo</span><strong id="total-bajo">0</strong></div>
-      <div class="tarjeta"><span>Agotados</span><strong id="total-agotados">0</strong></div>
-      <div class="tarjeta"><span>Valor del inventario</span><strong id="valor-inventario">$0</strong></div>
+    <div class="menu">
+
+      <p class="grupo">Principal</p>
+
+      <nav>
+        <a href="#resumen" class="menu-item activo">
+          <span class="menu-icono">▣</span>
+          <span>Resumen</span>
+        </a>
+
+        <a href="#inventario" class="menu-item">
+          <span class="menu-icono">□</span>
+          <span>Inventario</span>
+        </a>
+
+        <a href="#ventas" class="menu-item">
+          <span class="menu-icono">↗</span>
+          <span>Movimientos</span>
+        </a>
+      </nav>
+
+      <p class="grupo">Gestión</p>
+
+      <nav>
+        <a href="#form-producto" class="menu-item">
+          <span class="menu-icono">＋</span>
+          <span>Productos</span>
+        </a>
+
+        <a href="#pedido" class="menu-item">
+          <span class="menu-icono">□</span>
+          <span>Pedido a proveedor</span>
+        </a>
+      </nav>
+
+    </div>
+
+    <!-- WhatsApp -->
+    <div class="whatsapp-sidebar">
+      <div class="whatsapp-titulo">
+        <span class="whatsapp-icono">✓</span>
+        <strong>Alertas por WhatsApp</strong>
+      </div>
+
+      <p>
+        Recibe un mensaje cuando un producto esté por agotarse.
+      </p>
+
+      <a href="#pedido" class="whatsapp-configurar">
+        Configurar alertas
+      </a>
+    </div>
+
+    <button id="btn-salir" type="button" class="btn-salir">
+      <span>↪</span>
+      Cerrar sesión
+    </button>
+
+  </aside>
+
+
+  <!-- ================= CONTENIDO ================= -->
+  <main class="contenido">
+
+    <!-- Estado de conexión: lo sigue utilizando productos.js -->
+    <div id="estado-red" class="estado-red en-linea">
+      Conectado
+    </div>
+
+
+    <!-- ================= ENCABEZADO ================= -->
+    <header class="encabezado" id="resumen">
+
+      <div class="encabezado-texto">
+        <h1>
+          <span id="saludo">Buenos días</span>,
+          <span id="usuario"></span>
+          <span class="saludo-mano">👋</span>
+        </h1>
+
+        <p class="subtitulo" id="fecha"></p>
+      </div>
+
+      <a class="btn-verde" href="#form-producto">
+        <span>＋</span>
+        Agregar producto
+      </a>
+
+    </header>
+
+
+    <!-- ================= TARJETAS RESUMEN ================= -->
+    <section class="resumen tarjetas-resumen">
+
+      <div class="tarjeta tarjeta-productos">
+        <div class="tarjeta-superior">
+          <span>Productos activos</span>
+          <span class="tarjeta-icono verde">▣</span>
+        </div>
+
+        <strong id="total-productos">0</strong>
+
+        <small>
+          <span class="dato-verde">●</span>
+          En inventario
+        </small>
+      </div>
+
+
+      <div class="tarjeta tarjeta-bajo">
+        <div class="tarjeta-superior">
+          <span>Stock bajo</span>
+          <span class="tarjeta-icono amarillo">!</span>
+        </div>
+
+        <strong id="total-bajo">0</strong>
+
+        <small>
+          Requieren atención
+        </small>
+      </div>
+
+
+      <div class="tarjeta tarjeta-agotado">
+        <div class="tarjeta-superior">
+          <span>Agotados</span>
+          <span class="tarjeta-icono rojo">×</span>
+        </div>
+
+        <strong id="total-agotados">0</strong>
+
+        <small>
+          Requieren reposición
+        </small>
+      </div>
+
+
+      <div class="tarjeta tarjeta-valor">
+        <div class="tarjeta-superior">
+          <span>Valor del inventario</span>
+          <span class="tarjeta-icono azul">$</span>
+        </div>
+
+        <strong id="valor-inventario">$0</strong>
+
+        <small>
+          Valor actual
+        </small>
+      </div>
+
     </section>
 
-    <section class="card-form">
-      <h2>Alertas</h2>
-      <ul id="lista-alertas" class="alertas"></ul>
-      <p id="sin-alertas" class="subtitulo">Todo en orden, no hay alertas.</p>
+
+    <!-- ================= INVENTARIO + ALERTAS ================= -->
+    <div class="dos-col dashboard-principal">
+
+
+      <!-- INVENTARIO -->
+      <section class="caja inventario-caja" id="inventario">
+
+        <div class="caja-encabezado">
+
+          <div>
+            <h2>Inventario reciente</h2>
+            <p class="subtitulo">
+              Productos que necesitan tu atención
+            </p>
+          </div>
+
+          <span class="ver-seccion">
+            Ver inventario →
+          </span>
+
+        </div>
+
+
+        <div class="buscador-contenedor">
+          <span class="buscador-icono">⌕</span>
+
+          <input
+            id="buscador"
+            type="search"
+            class="buscador"
+            placeholder="Buscar producto o categoría..."
+            autocomplete="off"
+          >
+        </div>
+
+
+        <div class="tabla-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th class="columna-secundaria">Categoría</th>
+                <th class="columna-secundaria">Precio</th>
+                <th>Stock</th>
+                <th>Mínimo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabla-productos"></tbody>
+
+          </table>
+
+        </div>
+
+        <p id="vacio" class="subtitulo mensaje-vacio">
+          Aún no tienes productos registrados.
+        </p>
+
+      </section>
+
+
+      <!-- ALERTAS -->
+      <section class="caja alertas-caja">
+
+        <div class="caja-encabezado">
+
+          <div>
+            <h2>Alertas</h2>
+            <p class="subtitulo">
+              Lo que requiere tu atención
+            </p>
+          </div>
+
+          <span class="alertas-contador" id="contador-alertas">
+            !
+          </span>
+
+        </div>
+
+
+        <ul id="lista-alertas" class="alertas"></ul>
+
+        <div id="sin-alertas" class="sin-alertas">
+          <div class="sin-alertas-icono">✓</div>
+
+          <strong>Todo en orden</strong>
+
+          <p>
+            No hay productos que requieran atención.
+          </p>
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- ================= WHATSAPP ================= -->
+    <section class="whatsapp-panel" id="pedido">
+
+      <div class="whatsapp-panel-icono">
+        ✓
+      </div>
+
+      <div class="whatsapp-panel-texto">
+
+        <h2>Alertas automáticas por WhatsApp</h2>
+
+        <p>
+          Recibe avisos cuando un producto esté próximo a agotarse.
+        </p>
+
+        <div class="whatsapp-estado">
+          <span class="estado-punto"></span>
+          WhatsApp disponible
+        </div>
+
+      </div>
+
+      <div class="whatsapp-panel-acciones">
+
+        <input
+          id="telefono"
+          type="tel"
+          placeholder="3001234567"
+          aria-label="WhatsApp del proveedor"
+        >
+
+        <button
+          id="btn-whatsapp"
+          type="button"
+          class="btn btn-whatsapp"
+        >
+          Enviar pedido por WhatsApp
+        </button>
+
+      </div>
+
     </section>
-    <section class="card-form">
-      <h2>Pedido sugerido</h2>
+
+
+    <!-- ================= PEDIDO SUGERIDO ================= -->
+    <section class="caja pedido-detalle">
+
+      <div class="caja-encabezado">
+        <div>
+          <h2>Pedido sugerido</h2>
+          <p class="subtitulo">
+            Productos que deberías reponer
+          </p>
+        </div>
+      </div>
+
       <ul id="lista-pedido" class="alertas"></ul>
-      <p id="sin-pedido" class="subtitulo">No necesitas pedir nada por ahora.</p>
-      <label for="telefono">WhatsApp del proveedor (opcional)</label>
-      <input id="telefono" type="tel" placeholder="3001234567">
-      <button id="btn-whatsapp" type="button" class="btn">Enviar pedido por WhatsApp</button>
+
+      <div id="sin-pedido" class="sin-pedido">
+        No necesitas pedir nada por ahora.
+      </div>
+
     </section>
-    <section class="card-form">
-      <h2 id="titulo-form">Agregar producto</h2>
+
+
+    <!-- ================= PRODUCTOS ================= -->
+    <section class="caja formulario-producto" id="form-producto">
+
+      <div class="caja-encabezado">
+
+        <div>
+          <h2 id="titulo-form">Agregar producto</h2>
+          <p class="subtitulo">
+            Registra un nuevo producto en tu inventario
+          </p>
+        </div>
+
+      </div>
+
+
       <div class="grid-form">
+
         <div>
           <label for="nombre">Nombre</label>
-          <input id="nombre" type="text" maxlength="60" placeholder="Coca-Cola 1.5L">
+          <input
+            id="nombre"
+            type="text"
+            maxlength="60"
+            placeholder="Coca-Cola 1.5L"
+          >
         </div>
+
         <div>
           <label for="categoria">Categoría</label>
-          <input id="categoria" type="text" maxlength="40" placeholder="Bebidas">
+          <input
+            id="categoria"
+            type="text"
+            maxlength="40"
+            placeholder="Bebidas"
+          >
         </div>
+
         <div>
           <label for="precio">Precio</label>
-          <input id="precio" type="number" min="0" step="1" placeholder="4500">
+          <input
+            id="precio"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="4500"
+          >
         </div>
+
         <div>
           <label for="stock">Stock</label>
-          <input id="stock" type="number" min="0" step="1" placeholder="20">
+          <input
+            id="stock"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="20"
+          >
         </div>
+
         <div>
           <label for="minimo">Stock mínimo</label>
-          <input id="minimo" type="number" min="0" step="1" placeholder="5">
+          <input
+            id="minimo"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="5"
+          >
+        </div>
+
+      </div>
+
+
+      <div class="form-acciones">
+
+        <button id="btn-guardar" type="button" class="btn">
+          Guardar producto
+        </button>
+
+        <button
+          id="btn-cancelar"
+          type="button"
+          class="btn-salir oculto"
+        >
+          Cancelar edición
+        </button>
+
+      </div>
+
+      <p id="mensaje" class="mensaje"></p>
+
+    </section>
+
+
+    <!-- ================= VENTAS ================= -->
+    <section id="ventas" class="ventas-seccion">
+
+      <div class="seccion-titulo">
+        <div>
+          <h2>Movimientos y ventas</h2>
+          <p class="subtitulo">
+            Resumen de las ventas registradas
+          </p>
         </div>
       </div>
-      <button id="btn-guardar" type="button" class="btn">Guardar producto</button>
-      <button id="btn-cancelar" type="button" class="btn-salir oculto">Cancelar edición</button>
-      <p id="mensaje" class="mensaje"></p>
+
+
+      <div class="resumen ventas-resumen">
+
+        <div class="tarjeta">
+          <div class="tarjeta-superior">
+            <span>Ventas de hoy</span>
+            <span class="tarjeta-icono verde">↗</span>
+          </div>
+
+          <strong id="ventas-hoy">0</strong>
+
+          <small>
+            Transacciones
+          </small>
+        </div>
+
+
+        <div class="tarjeta">
+          <div class="tarjeta-superior">
+            <span>Total vendido hoy</span>
+            <span class="tarjeta-icono verde">$</span>
+          </div>
+
+          <strong id="total-hoy">$0</strong>
+
+          <small>
+            Ventas del día
+          </small>
+        </div>
+
+
+        <div class="tarjeta">
+          <div class="tarjeta-superior">
+            <span>Total últimos 7 días</span>
+            <span class="tarjeta-icono azul">7</span>
+          </div>
+
+          <strong id="total-semana">$0</strong>
+
+          <small>
+            Últimos siete días
+          </small>
+        </div>
+
+      </div>
+
+
+      <div class="dos-col ventas-listas">
+
+        <div class="caja">
+
+          <h3>Más vendidos</h3>
+
+          <p class="subtitulo">
+            Últimos 7 días
+          </p>
+
+          <ul id="lista-top" class="alertas"></ul>
+
+          <p id="sin-top" class="subtitulo">
+            Aún no hay ventas en los últimos 7 días.
+          </p>
+
+        </div>
+
+
+        <div class="caja">
+
+          <h3>Últimas ventas</h3>
+
+          <p class="subtitulo">
+            Actividad reciente
+          </p>
+
+          <ul id="lista-ultimas" class="alertas"></ul>
+
+          <p id="sin-ultimas" class="subtitulo">
+            Aún no has registrado ventas.
+          </p>
+
+        </div>
+
+      </div>
+
     </section>
 
-    <section>
-      <h2>Inventario</h2>
-       <input id="buscador" type="search" class="buscador"
-             placeholder="Buscar por nombre o categoría..." autocomplete="off">
-      <div class="tabla-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th><th>Categoría</th><th>Precio</th>
-              <th>Stock</th><th>Mínimo</th><th>Estado</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-productos"></tbody>
-        </table>
-      </div>
-      <p id="vacio" class="subtitulo">Aún no tienes productos registrados.</p>
-    </section>
-     <section>
-      <h2>Panel de ventas</h2>
-      <div class="resumen">
-        <div class="tarjeta"><span>Ventas de hoy</span><strong id="ventas-hoy">0</strong></div>
-        <div class="tarjeta"><span>Total vendido hoy</span><strong id="total-hoy">$0</strong></div>
-        <div class="tarjeta"><span>Total últimos 7 días</span><strong id="total-semana">$0</strong></div>
-      </div>
-
-      <div class="card-form">
-        <h3>Más vendidos (últimos 7 días)</h3>
-        <ul id="lista-top" class="alertas"></ul>
-        <p id="sin-top" class="subtitulo">Aún no hay ventas en los últimos 7 días.</p>
-      </div>
-
-      <div class="card-form">
-        <h3>Últimas ventas</h3>
-        <ul id="lista-ultimas" class="alertas"></ul>
-        <p id="sin-ultimas" class="subtitulo">Aún no has registrado ventas.</p>
-      </div>
-    </section>
   </main>
 
+
+  <!-- ================= SCRIPTS ================= -->
+
   <script type="module" src="js/productos.js"></script>
+
   <script type="module" src="js/ventas.js"></script>
+
+
   <script>
+
+    // Saludo según la hora
+    const ahora = new Date();
+    const h = ahora.getHours();
+
+    document.getElementById("saludo").textContent =
+      h < 12
+        ? "Buenos días"
+        : h < 19
+          ? "Buenas tardes"
+          : "Buenas noches";
+
+
+    // Fecha actual
+    document.getElementById("fecha").textContent =
+      "Este es el estado de tu inventario hoy, " +
+      ahora.toLocaleDateString("es-CO", {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      }) +
+      ".";
+
+
+    // Service Worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js");
     }
+
+
+    // Navegación visual del menú
+    document.querySelectorAll(".menu-item").forEach((item) => {
+
+      item.addEventListener("click", () => {
+
+        document
+          .querySelectorAll(".menu-item")
+          .forEach((elemento) => elemento.classList.remove("activo"));
+
+        item.classList.add("activo");
+
+      });
+
+    });
+
   </script>
+
 </body>
 </html>

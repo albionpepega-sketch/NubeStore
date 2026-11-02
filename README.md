@@ -78,4 +78,5 @@ Para mantener el proyecto gratuito:
 
 ## Autor
 
-Tu Nombre - Los Libertadores, Proyecto de aula
+Camilo Rodriguez
+

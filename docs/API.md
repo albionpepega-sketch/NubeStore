@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # NubeStore - Documentación de la API
 
 NubeStore no tiene un servidor propio ni endpoints REST. El backend es **Firebase** (plan Spark, gratuito) y la aplicación web se comunica con él mediante el SDK de JavaScript. Esta documentación describe ese "API": autenticación, colecciones de datos, operaciones, reglas de seguridad y lógica de negocio.
@@ -540,4 +540,4 @@ firebase deploy --only hosting
 ```
 
 La URL pública se encuentra en la sección "App desplegada" del `README.md`.
->>>>>>> cdb4b06 (css)
+

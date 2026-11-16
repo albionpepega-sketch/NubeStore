@@ -56,7 +56,7 @@ docs/                         Documentación
 
 - [Documentación de la API](docs/API.md)
 - [Reglas de seguridad de Firestore](docs/firestore.rules)
-- Plan de pruebas y reporte de bugs: (pega aquí el enlace de Google Sheets)
+- Plan de pruebas y reporte de bugs:(https://docs.google.com/spreadsheets/d/1x1MdTt-rKaCApRB9TdClwaalWfcY59Ci/edit?usp=sharing&ouid=116810631968834151595&rtpof=true&sd=true)
 - Bugs: pestaña **Issues** de este repositorio
 
 ## Flujo de trabajo

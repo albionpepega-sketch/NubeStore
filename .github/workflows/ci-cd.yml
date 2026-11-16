@@ -13,6 +13,16 @@ jobs:
         with:
           node-version: 20
       - run: node --test
+      - name: Verificar secreto de Firebase
+        env:
+          FIREBASE_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_NUBESTORE_ECEEB }}
+        run: |
+          if [ -z "$FIREBASE_KEY" ]; then
+            echo "ERROR: El secreto está vacío o no está disponible"
+            exit 1
+          else
+            echo "OK: El secreto está disponible"
+          fi
   despliegue:
     needs: pruebas
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

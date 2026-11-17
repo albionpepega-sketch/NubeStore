@@ -1,6 +1,6 @@
 # NubeStore
 
-Sistema de control de inventario en la nube para tiendas de barrio. Proyecto de aula de la Fundación Universitaria Los Libertadores (Fases 1, 2 y 3).
+Sistema de control de inventario en la nube para tiendas de barrio.
 
 ## Enlaces
 

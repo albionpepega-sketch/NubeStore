@@ -1,7 +1,7 @@
 # NubeStore
 
-Control de inventario simple para tiendas de barrio.
-Proyecto de aula, Fase 2: construcción y despliegue del MVP.
+Control de inventario para tiendas de barrio.
+
 
 ## App desplegada
 

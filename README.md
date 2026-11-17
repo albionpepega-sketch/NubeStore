@@ -7,8 +7,6 @@ Sistema de control de inventario en la nube para tiendas de barrio.
 | Recurso | Enlace |
 |---|---|
 | Aplicación desplegada | https://nubestore-eceeb.web.app |
-| Video de demostración final | _pendiente: agregar el enlace de YouTube o Loom_ |
-| Presentación ejecutiva | _pendiente: agregar el enlace de Canva, Genially o PDF_ |
 | Documentación de la API | [docs/API.md](docs/API.md) |
 | Plan de pruebas y reporte de bugs | [Google Sheets](https://docs.google.com/spreadsheets/d/1x1MdTt-rKaCApRB9TdClwaalWfcY59Ci/edit?usp=sharing&ouid=116810631968834151595&rtpof=true&sd=true) |
 | Issues del repositorio | [Pestaña Issues](../../issues?q=is%3Aissue) |
